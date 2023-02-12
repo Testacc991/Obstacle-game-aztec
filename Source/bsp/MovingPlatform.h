@@ -22,6 +22,16 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	bool state = false;//closed door
+	FVector ActorRightVec = FVector(0, 0, 0);
+	FVector ActorLeftVec = FVector(0, 0, 0);
+	FVector CurrentLocation = FVector(0, 0, 0);
+	FVector StartLocation = FVector(0, 0, 0); 
+	float Time = 0;
 	UPROPERTY(EditAnywhere)
-	FVector MyVec = FVector(1,2,3);
+	float speed = 2;
+	UPROPERTY(EditAnywhere)
+	float Distance = 1000;
+	UPROPERTY(EditAnywhere)
+	float Wait = 3;
 };

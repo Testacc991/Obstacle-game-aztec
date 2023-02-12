@@ -15,15 +15,33 @@ AMovingPlatform::AMovingPlatform()
 void AMovingPlatform::BeginPlay()
 {
 	Super::BeginPlay();
-	MyVec = GetActorLocation();
-	
+	StartLocation = GetActorLocation();
+	ActorRightVec = GetActorRightVector();
+	ActorLeftVec = GetActorRightVector() * -1;
 }
 
 // Called every frame
 void AMovingPlatform::Tick(float DeltaTime)
 {
+	
 	Super::Tick(DeltaTime);
-	MyVec.Z = MyVec.Z + 0.5;
-	SetActorLocation(MyVec);
+
+	CurrentLocation = GetActorLocation();
+	if (FVector::Distance(StartLocation, CurrentLocation) < Distance)
+	{
+		CurrentLocation = CurrentLocation + ((ActorLeftVec * speed) * DeltaTime);
+		SetActorLocation(CurrentLocation);
+	}
+	else
+	{
+		Time = Time + DeltaTime;
+		if (Time >= Wait)
+		{
+			Time = 0;
+			StartLocation = StartLocation + ActorLeftVec * Distance;
+			SetActorLocation(StartLocation);
+			ActorLeftVec = -ActorLeftVec;
+		}
+	}
 }
 
