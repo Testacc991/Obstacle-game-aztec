@@ -2,7 +2,6 @@
 
 
 #include "MovingPlatform.h"
-
 // Sets default values
 AMovingPlatform::AMovingPlatform()
 {
@@ -16,8 +15,6 @@ void AMovingPlatform::BeginPlay()
 {
 	Super::BeginPlay();
 	StartLocation = GetActorLocation();
-	ActorRightVec = GetActorRightVector();
-	ActorLeftVec = GetActorRightVector() * -1;
 }
 
 // Called every frame
@@ -27,21 +24,18 @@ void AMovingPlatform::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CurrentLocation = GetActorLocation();
-	if (FVector::Distance(StartLocation, CurrentLocation) < Distance)
+	DistanceMoved = FVector::Distance(StartLocation, CurrentLocation);
+	if (DistanceMoved < Distance)
 	{
-		CurrentLocation = CurrentLocation + ((ActorLeftVec * speed) * DeltaTime);
+		CurrentLocation = CurrentLocation + Velocity * DeltaTime;
 		SetActorLocation(CurrentLocation);
 	}
 	else
-	{
-		Time = Time + DeltaTime;
-		if (Time >= Wait)
-		{
-			Time = 0;
-			StartLocation = StartLocation + ActorLeftVec * Distance;
-			SetActorLocation(StartLocation);
-			ActorLeftVec = -ActorLeftVec;
-		}
+	{	
+		FVector Dir = Velocity.GetSafeNormal();
+		StartLocation = StartLocation + Dir * Distance;
+		SetActorLocation(StartLocation);
+		Velocity = -Velocity;	
 	}
 }
 
